@@ -7,10 +7,10 @@ namespace caffe {
 
 template <typename Dtype>
 __global__ void InterpForward(Dtype* const top, const Dtype* const bottom, int height, int width, int num_channel, int batch_size){
-    int batch_id = blockIdx.x*blockDim.x + threadIdx.x;
-    int channel_id = blockIdx.y*blockDim.y + threadIdx.y;
+    int batch_id = blockIdx.x*blockDim.x+threadIdx.x;
+    int channel_id = blockIdx.y*blockDim.y+threadIdx.y;
     if(batch_id < batch_size && channel_id < num_channel) {
-	    printf("%d %d out of %d\n", batch_id, channel_id, num_channel);
+	    //printf("%d/%d, %d/%d\n", batch_id, batch_size, channel_id, num_channel);
 	    for(int i=0; i<height; i++)
 	      for(int j=0; j<width; j++)
 	    {
@@ -57,8 +57,10 @@ void InterpLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   //SinForward<Dtype><<<CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS>>>(
   //    count, bottom_data, top_data);
   //InterpForward<Dtype><<<CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS>>>(top_data, bottom_data, height_, width_, channels_, batch_);
-  printf("CAFFE BLOCKS: %d CAFFE NUM THREADS: %d \n", CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS);
-  InterpForward<Dtype><<<32,32>>>(top_data, bottom_data, height_, width_, channels_, batch_);
+  //printf("CAFFE BLOCKS: %d CAFFE NUM THREADS: %d \n", CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS);
+    dim3 numb(batch_/32+1, channels_/32);
+    dim3 block(32, 32);
+  InterpForward<Dtype><<<numb, block>>>(top_data, bottom_data, height_, width_, channels_, batch_);
   CUDA_POST_KERNEL_CHECK;
 }
 
@@ -76,10 +78,11 @@ __global__ void InterpBackward(const Dtype* const top, Dtype* const bottom, int 
 		 bottom[batch_id*num_channel*height*width + channel_id*height*width + i*width+j]=
 		 top[batch_id*num_channel*height*width*4 + channel_id*height*width*4 + i*2*width*2+j*2];
 	 
-		 //compute odd columns
-		if(j!=width-1) {
+		 //compute odd rows
+		//if(j!=width-1) {
+		if(i!=height-1) {
 
-		 bottom[batch_id*num_channel*height*width + channel_id*height*width + i*width+j]+=0.5*
+		 bottom[batch_id*num_channel*height*width + channel_id*height*width + i*width+j] += 0.5*
 		 top[batch_id*num_channel*height*width*4 + channel_id*height*width*4 + (i*2+1)*width*2 + j*2];
 
 		 
@@ -90,8 +93,8 @@ __global__ void InterpBackward(const Dtype* const top, Dtype* const bottom, int 
 	    }
 
 	    //compute even columns odd rows 
-	    for(int i=0; i<height*2-2; i+=2)
-	      for(int j=1; j<width*2-2; j+=2){
+	    for(int i=0; i<height*2; i+=2)
+	      for(int j=1; j<width*2-1; j+=2){
 		 bottom[batch_id*num_channel*height*width + channel_id*height*width + (i/2)*width+j/2]+=0.5*
 		 top[batch_id*num_channel*height*width*4 + channel_id*height*width*4 + i*width*2 + j];
 
@@ -100,8 +103,8 @@ __global__ void InterpBackward(const Dtype* const top, Dtype* const bottom, int 
 	   }
 
 	   //even columns even rows: aka corners
-	    for(int i=1; i<height*2-2; i+=2)
-	      for(int j=1; j<width*2-2; j+=2){
+	    for(int i=1; i<height*2-1; i+=2)
+	      for(int j=1; j<width*2-1; j+=2){
 		 bottom[batch_id*num_channel*height*width + channel_id*height*width + (i/2)*width+j/2]+=0.25*
 		 top[batch_id*num_channel*height*width*4 + channel_id*height*width*4 + i*width*2 + j];
 
@@ -132,7 +135,9 @@ void InterpLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     //    count, top_diff, bottom_data, bottom_diff);
     //CUDA_POST_KERNEL_CHECK;
     //InterpBackward<Dtype><<<CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS>>>(top_diff, bottom_diff, height_, width_, channels_, batch_);
-    InterpBackward<Dtype><<<32,32>>>(top_diff, bottom_diff, height_, width_, channels_, batch_);
+    dim3 numb(batch_/32+1, channels_/32);
+    dim3 block(32, 32);
+    InterpBackward<Dtype><<<numb,block>>>(top_diff, bottom_diff, height_, width_, channels_, batch_);
     CUDA_POST_KERNEL_CHECK;
   }
 }
