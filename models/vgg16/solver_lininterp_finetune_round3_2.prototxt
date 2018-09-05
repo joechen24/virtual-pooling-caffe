@@ -1,0 +1,15 @@
+net: "models/vgg16/train_val_lininterp_round3_2_afterAct.prototxt"
+test_iter: 2000
+test_interval: 5000
+#test_initialization: false
+base_lr: 0.001
+lr_policy: "step"
+gamma: 0.1
+stepsize: 15000
+display: 100
+max_iter: 60000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 15000
+snapshot_prefix: "models/vgg16/vgg16_lininterp_finetune3_2_afterAct_fromPythonResult"
+solver_mode: GPU

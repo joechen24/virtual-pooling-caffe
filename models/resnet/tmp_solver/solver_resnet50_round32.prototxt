@@ -1,0 +1,16 @@
+net: "models/resnet/tmp_train_val/train_val_resnet50_round32.prototxt"
+test_iter: 10000
+test_interval: 5000
+#test_initialization: false
+base_lr: 0.0001
+lr_policy: "multistep"
+gamma: 0.1
+stepvalue: 30000
+stepvalue: 45000
+display: 100
+max_iter: 60000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 15000
+solver_mode: GPU
+snapshot_prefix: "models/resnet/snapshots/resnet50_lininterp_finetune32_CUDAv5_newLRpolicyFrom1e-4_35batchsize"
