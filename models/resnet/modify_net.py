@@ -1,5 +1,6 @@
 from caffe.proto import caffe_pb2
 import google.protobuf.text_format as txtf
+import random
 
 def gen_VIP_perlayer():
 	net = caffe_pb2.NetParameter()
@@ -382,17 +383,19 @@ def gen_VIP_round_new(roundInd,layers_to_interp):
 						break
 				newf.write(line)
 				       		
-	#solverTemplateFn = './tmp_solver/solver_resnet50_template.prototxt'
-	#solverFn = './tmp_solver/solver_resnet50_round{}.prototxt'.format(roundInd)
-	#with open(solverTemplateFn) as tempf:
-	#	with open(solverFn, 'w') as f:
-	#		f.write('net: "models/resnet/tmp_train_val/train_val_resnet50_round{}.prototxt"\n'.format(roundInd))
-	#		for line in tempf.readlines():
-	#			f.write(line)
-	#		f.write('snapshot_prefix: "models/resnet/snapshots/resnet50_lininterp_finetune{}_CUDAv5_newLRpolicyFrom1e-4_35batchsize"'.format(roundInd))
+	solverTemplateFn = './tmp_solver/solver_resnet50_template.prototxt'
+	solverFn = './tmp_solver/solver_resnet50_round{}.prototxt'.format(roundInd)
+	with open(solverTemplateFn) as tempf:
+		with open(solverFn, 'w') as f:
+			f.write('net: "models/resnet/tmp_train_val/train_val_resnet50_round{}_train33test1.prototxt"\n'.format(roundInd))
+			for line in tempf.readlines():
+				f.write(line)
+			#f.write('snapshot_prefix: "models/resnet/snapshots/resnet50_lininterp_finetune{}_CUDAv5_newLRpolicyFrom1e-4_35batchsize"'.format(roundInd))
+			f.write('snapshot_prefix: "models/resnet/snapshots/resnet50_lininterp_finetune{}_CUDAv5"'.format(roundInd))
 			
 	print './build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round{0}_train33test1.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round{0}_interpCUDAv5_train33test1.out'.format(roundInd)
 	#print "./build/tools/caffe train --solver=models/resnet/tmp_solver/solver_resnet50_round{0}.prototxt --weights=models/resnet/snapshots/resnet50_lininterp_finetune{1}_CUDAv5_newLRpolicy_35batchsize.caffemodel -gpu 1 2>&1 | tee ./resnet_results/resnet50_lininterp_round{0}_CUDAv5_newLRpolicy_35batchsize.out".format(roundInd, roundInd-1)
+	print "./build/tools/caffe train --solver=models/resnet/tmp_solver/solver_resnet50_round{0}.prototxt --weights=models/resnet/ResNet-50-model.caffemodel -gpu 1 2>&1 | tee ./resnet_results/resnet50_lininterp_round{0}.out".format(roundInd, roundInd-1)
 
 ########################################========= main ===========###############################
 all_layers_to_interp=[
@@ -451,17 +454,38 @@ all_layers_to_interp=[
 	"res5c_branch2b",
 	"res5c_branch2c"
 ]
-roundInd = 3
-round3Elem = [27,28,35,45,4,5,26,1,14,15,3,41,51,22]
-if roundInd == 1:
-	###### for round 1
-	layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43]]
-elif roundInd == 2:
-	###### for round 2
-	layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43,21,46,47,48,49,50,52,53]]
-elif roundInd == 3:
-	###### for round 3
-	for perlayer in range(len(round3Elem)):
-		layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43,21,46,47,48,49,50,52,53]+round3Elem[:perlayer+1]]
-		gen_VIP_round_new(roundInd*10+perlayer+1,layers_to_interp)
-#gen_VIP_perlayer_new()
+#roundInd = 3
+#round3Elem = [27,28,35,45,4,5,26,1,14,15,3,41,51,22]
+#if roundInd == 1:
+#	###### for round 1
+#	layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43]]
+#elif roundInd == 2:
+#	###### for round 2
+#	layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43,21,46,47,48,49,50,52,53]]
+#elif roundInd == 3:
+#	###### for round 3
+#	for perlayer in range(len(round3Elem)):
+#		layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43,21,46,47,48,49,50,52,53]+round3Elem[:perlayer+1]]
+#		gen_VIP_round_new(roundInd*10+perlayer+1,layers_to_interp)
+##gen_VIP_perlayer_new()
+
+######## randomize layers to interp
+
+num_layer_interp = len([10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43])
+layer_list = [
+		[15, 11, 30, 16, 47, 49, 26, 13, 43, 7, 45, 37, 46, 2, 34, 1, 22, 40, 52, 27, 32],#122.58
+		[5, 37, 39, 9, 48, 49, 19, 21, 18, 27, 32, 6, 26, 22, 36, 8, 45, 12, 17, 51, 50], #127
+		[20, 39, 19, 52, 10, 6, 45, 46, 36, 30, 14, 4, 40, 21, 44, 17, 28, 43, 16, 11, 18],#128.37
+		[17, 42, 48, 10, 33, 40, 29, 37, 24, 44, 13, 50, 41, 35, 51, 2, 14, 18, 36, 46, 4], #131.10
+		[26, 3, 51, 14, 47, 48, 29, 21, 50, 16, 8, 35, 6, 36, 34, 40, 32, 31, 43, 42, 19], # 133.00
+		[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+		]
+
+roundInd = len(layer_list)
+#for ind in range(roundInd):
+for ind in [5]:
+	#random_interp = random.sample(range(1, 53), num_layer_interp)
+	print 'Layers to interp: ', layer_list[ind]
+#	layers_to_interp = [all_layers_to_interp[i] for i in random_interp]
+	layers_to_interp = layer_list[ind]
+	gen_VIP_round_new((ind+1)*100,layers_to_interp)

@@ -14,7 +14,7 @@ layer {
   }
   data_param {
     source: "/home/zhuo/caffe/examples/imagenet/ilsvrc12_train_lmdb"
-    batch_size: 35
+    batch_size: 33
     backend: LMDB
   }
 }
