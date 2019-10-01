@@ -1,21 +1,33 @@
 #!/bin/bash
 
-#### Thinet sensitivity analysis
-./build/tools/caffe test --model=models/vgg16/train_val_thinet.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/original_thinet.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv11.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv11_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv12.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv12_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv21.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv21_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv22.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv22_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv31.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv31_afterAct.out
+### Thinet timing
+./build/tools/caffe time --model=models/vgg16/train_val_thinet.prototxt -iterations 5  -gpu 1 2>&1 | tee  ./thinet_results/time_thinet_original.out
+./build/tools/caffe time --model=models/vgg16/train_val_thinet_lininterp_round1.prototxt -gpu 1 -iterations 5  2>&1 | tee   ./thinet_results/time_thinet_lininterp_finetune1.out
+./build/tools/caffe time --model=models/vgg16/train_val_thinet_lininterp_round2.prototxt -gpu 1 -iterations 5  2>&1 | tee   ./thinet_results/time_thinet_lininterp_finetune2.out
+./build/tools/caffe time --model=models/vgg16/train_val_thinet_lininterp_round3.prototxt -gpu 1 -iterations 5  2>&1 | tee   ./thinet_results/time_thinet_lininterp_finetune3.out
 
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv32.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv32_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv33.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv33_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv41.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv41_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv42.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv42_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv43.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv43_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv51.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv51_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv52.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv52_afterAct.out
-./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv53.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv53_afterAct.out
+./build/tools/caffe train --solver=models/vgg16/solver_thinet_lininterp_round1.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 0  2>&1 | tee  ./thinet_results/thinet_lininterp_finetune1.out
+
+./build/tools/caffe train --solver=models/vgg16/solver_thinet_lininterp_round2.prototxt --weights=models/vgg16/model_snapshots/thinet_lininterp_finetune1_iter_75000.caffemodel -gpu 0  2>&1 | tee  ./thinet_results/thinet_lininterp_finetune2.out
+
+./build/tools/caffe train --solver=models/vgg16/solver_thinet_lininterp_round3.prototxt --weights=models/vgg16/model_snapshots/thinet_lininterp_finetune2_iter_75000.caffemodel -gpu 0  2>&1 | tee  ./thinet_results/thinet_lininterp_finetune3.out
+
+#### Thinet sensitivity analysis
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/original_thinet.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv11.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv11_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv12.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv12_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv21.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv21_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv22.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv22_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv31.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv31_afterAct.out
+#
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv32.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv32_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv33.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv33_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv41.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv41_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv42.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv42_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv43.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv43_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv51.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv51_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv52.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv52_afterAct.out
+#./build/tools/caffe test --model=models/vgg16/train_val_thinet_lininterp_conv53.prototxt --weights=models/vgg16/ThiNet-GAP.caffemodel -gpu 1 -iterations 1000 2>&1 | tee  thinet_results/thinet_lininterp_conv53_afterAct.out
 
 ################ ViP vs. double-stride+pooling removal
 #./build/tools/caffe test --model=models/vgg16/train_val_removePool1.prototxt --weights=models/vgg16/VGG_ILSVRC_16_layers.caffemodel -gpu 1 -iterations 1000 2>&1 | tee ./vgg_results/train_val_removePool1.out
