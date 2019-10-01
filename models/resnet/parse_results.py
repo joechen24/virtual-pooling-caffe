@@ -147,8 +147,11 @@ def parse_time(filename_suffix):
 #for iterNum in iterRange:
 #	parse_time('lininterp_round{}_interpCUDAv5_train33test1'.format(iterNum))
 
-parse_time('original_cpu')
-iterRange = [1] + [2] + range(31,45)
-for iterNum in iterRange:
-	parse_time('lininterp_round{}_interpCUDAv5_train33test1_cpu'.format(iterNum))
+#parse_time('original_cpu')
+#iterRange = [1] + [2] + range(31,45)
+#for iterNum in iterRange:
+#	parse_time('lininterp_round{}_interpCUDAv5_train33test1_cpu'.format(iterNum))
 
+iterRange = [100,200,300,400,500,600]
+for iterNum in iterRange:
+	parse_time('lininterp_round{}_interpCUDAv5_train33test1'.format(iterNum))
