@@ -1,12 +1,57 @@
 #!/bin/bash
 
+############## speed statistical analysis
+for i in {1..10}
+do
+./build/tools/caffe time --model=models/resnet/train_val_resnet50.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_original_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round1_train33test1.prototxt -iterations 5  2>&1 | tee    ./resnet_results/time_resnet50_lininterp_round1_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round2_train33test1.prototxt -iterations 5  2>&1 | tee    ./resnet_results/time_resnet50_lininterp_round2_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round31_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round31_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round32_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round32_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round33_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round33_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round34_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round34_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round35_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round35_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round36_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round36_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round37_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round37_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round38_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round38_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round39_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round39_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round40_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round40_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round41_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round41_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round42_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round42_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round43_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round43_interpCUDAv5_train33test1_cpu_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round44_train33test1.prototxt -iterations 5  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round44_interpCUDAv5_train33test1_cpu_${i}.out
+
+./build/tools/caffe time --model=models/resnet/train_val_resnet50.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_original_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round1_train33test1.prototxt  -gpu 1  2>&1 | tee   ./resnet_results/time_resnet50_lininterp_round1_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round2_train33test1.prototxt  -gpu 1  2>&1 | tee   ./resnet_results/time_resnet50_lininterp_round2_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round31_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round31_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round32_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round32_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round33_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round33_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round34_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round34_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round35_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round35_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round36_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round36_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round37_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round37_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round38_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round38_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round39_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round39_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round40_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round40_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round41_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round41_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round42_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round42_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round43_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round43_interpCUDAv5_train33test1_${i}.out
+./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round44_train33test1.prototxt -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round44_interpCUDAv5_train33test1_${i}.out
+done
+
+
+
+
+############### before WACV rebuttal
+
 #./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round100_train33test1.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round100_interpCUDAv5_train33test1.out
 #./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round200_train33test1.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round200_interpCUDAv5_train33test1.out
 #./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round300_train33test1.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round300_interpCUDAv5_train33test1.out
 #./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round400_train33test1.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round400_interpCUDAv5_train33test1.out
 #./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round500_train33test1.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round500_interpCUDAv5_train33test1.out
 
-./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round600_train33test1.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round600_interpCUDAv5_train33test1.out
+#./build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round600_train33test1.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round600_interpCUDAv5_train33test1.out
 #./build/tools/caffe train --solver=models/resnet/tmp_solver/solver_resnet50_round600.prototxt --weights=models/resnet/ResNet-50-model.caffemodel -gpu 0 2>&1 | tee ./resnet_results/resnet50_lininterp_round600.out
 
 
